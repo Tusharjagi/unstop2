@@ -4,4 +4,5 @@ export const textConstant = {
   reset: "Reset",
   random: "Random",
   hotelManagementSystem: "Hotel Management System",
+  floor: "Floor",
 };

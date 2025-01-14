@@ -3,24 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --black: #222831;
+  --charlestonGreen: #222831;
   --white: #ffffff;
   --grey: #31363F;
   --primary: #76ABAE;
+  --metallicSeaweed: #0E8388;
   --offWhite: #EEEEEE;
   --cream: #E2DFD0;
   --darkBlack: #222;
+  --red: #FB2576;
+  --mossGreen: #8B9A46;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --black: #222831;
+    --charlestonGreen: #222831;
     --white: #ffffff;
   }
 }
 
 body {
   color: var(--white);
-  background: var(--black);
+  background: var(--charlestonGreen);
   font-family: Arial, Helvetica, sans-serif;
 }

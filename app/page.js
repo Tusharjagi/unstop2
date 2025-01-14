@@ -1,4 +1,5 @@
 import Header from "@/components/header";
+import HotelFloors from "@/components/hotel-floor/hotel-floor";
 import { textConstant } from "@/utils/textConstant";
 
 export default function Home() {
@@ -8,6 +9,7 @@ export default function Home() {
         {textConstant.hotelManagementSystem}
       </h1>
       <Header />
+      <HotelFloors />
     </div>
   );
 }

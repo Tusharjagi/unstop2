@@ -8,13 +8,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        black: "var(--black)",
+        charlestonGreen: "var(--charlestonGreen)",
         white: "var(--white)",
         grey: "var(--grey)",
         primary: "var(--primary)",
         offWhite: "var(--offWhite)",
         cream: "var(--cream)",
         darkBlack: "var(--darkBlack)",
+        metallicSeaweed: "var(--metallicSeaweed)",
+        red: "var(--red)",
+        mossGreen: "var(--mossGreen)",
       },
     },
   },
