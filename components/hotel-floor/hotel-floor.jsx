@@ -1,25 +1,42 @@
+import { useEffect, useState } from "react";
 import Floor from "./floor";
 
-export default function HotelFloors() {
-  const hotelFloors = Array.from({ length: 10 }, (_, floorIndex) => {
-    if (floorIndex < 9) {
-      return Array.from(
-        { length: 10 },
-        (_, roomIndex) => (floorIndex + 1) * 100 + (roomIndex + 1)
+export default function HotelFloors({ isDialogOpen, resetAPICalls }) {
+  const [hotelData, setHotelData] = useState(null);
+
+  const fetchHotelData = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/getHotelsAndFloors`
       );
-    } else {
-      return Array.from(
-        { length: 7 },
-        (_, roomIndex) => 1000 + (roomIndex + 1)
-      );
+      const data = await res.json();
+      setHotelData(data.data);
+    } catch (error) {
+      console.error("Error fetching hotel data:", error);
     }
-  });
+  };
+
+  useEffect(() => {
+    if (!isDialogOpen) fetchHotelData();
+  }, [isDialogOpen, resetAPICalls]);
 
   return (
     <div className="grid place-content-center m-10">
-      {hotelFloors.map((rooms, index) => (
-        <Floor key={index} floorNumber={index + 1} rooms={rooms} />
-      ))}
+      {hotelData ? (
+        hotelData.map((floor, index) => (
+          <Floor
+            key={`${floor._id}-${index}`}
+            id={`${floor._id}-${index}`}
+            floorNumber={floor.floor}
+            rooms={floor.rooms}
+          />
+        ))
+      ) : (
+        <div className="grid place-content-center text-center h-[50vh] font-medium">
+          <p>Loading hotels .... </p>
+          <p>We are happy to serve you !!!</p>
+        </div>
+      )}
     </div>
   );
 }

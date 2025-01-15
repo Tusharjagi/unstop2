@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,19 +10,95 @@ import {
 } from "../ui/dialog";
 import { textConstant } from "@/utils/textConstant";
 
-export default function Booking() {
-  const [bookingMethod, setBookingMethod] = useState(null);
+export default function Booking({ setIsDialogOpen, isDialogOpen }) {
+  const [bookingMethod, setBookingMethod] = useState("roomNumber");
+  const [selectedRoomNumber, setSelectedRoomNumber] = useState("");
+  const [personCount, setPersonCount] = useState(0);
+  const [invalidRoomNumberError, setInvalidRoomNumberError] = useState(null);
+  const [invalidPersonCountError, setInvalidPersonCountError] = useState(null);
 
   const handleMethodChange = (e) => {
     setBookingMethod(e.target.value);
+    setSelectedRoomNumber("");
+    setPersonCount("");
+    setInvalidRoomNumberError(null);
+    setInvalidPersonCountError(null);
+  };
+
+  const handleRoomNumber = (e) => {
+    const value = e.target.value;
+    if (value.length > 4) {
+      setInvalidRoomNumberError("Room number cannot exceed 4 digits.");
+    } else {
+      setInvalidRoomNumberError(null);
+      setSelectedRoomNumber(value);
+    }
+  };
+
+  const handlePersonNumber = (e) => {
+    const value = e.target.value;
+    if (parseInt(value, 10) > 5) {
+      setInvalidPersonCountError("Only 5 people are allowed.");
+    } else if (parseInt(value, 10) < 1) {
+      setInvalidPersonCountError("At least 1 person is required.");
+    } else {
+      setInvalidPersonCountError(null);
+      setPersonCount(value);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (bookingMethod === "roomNumber") {
+      if (!selectedRoomNumber.length) {
+        setIsDialogOpen(false);
+        setInvalidRoomNumberError("Please provide a room number.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/bookRoomNumber`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              roomNumber: selectedRoomNumber,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setIsDialogOpen(false);
+        } else {
+          setInvalidRoomNumberError(
+            data.message || "An unknown error occurred."
+          );
+        }
+      } catch (error) {
+        setInvalidRoomNumberError("Failed to connect to the server.");
+      }
+    }
+
+    if (
+      bookingMethod === "person" &&
+      (!personCount || invalidPersonCountError)
+    ) {
+      setInvalidPersonCountError("Please provide a valid person count.");
+      return;
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <button
           type="button"
           className="bg-offWhite text-darkBlack px-8 py-4 rounded-lg font-semibold text-xl hover:scale-105 transition-all duration-200 ease-in-out shadow-md hover:shadow-lg"
+          onClick={() => setIsDialogOpen(true)}
         >
           {textConstant.book}
         </button>
@@ -64,10 +140,15 @@ export default function Booking() {
               {textConstant.provideRoomNumber}
             </DialogTitle>
             <input
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-gray-300 focus:ring-primary focus:border-transparent mb-4"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-gray-300 focus:ring-primary focus:border-transparent mb-2"
               type="number"
               placeholder="Enter room number"
+              onChange={handleRoomNumber}
+              value={selectedRoomNumber}
             />
+            {invalidRoomNumberError && (
+              <p className="text-rose-600 text-sm">{invalidRoomNumberError}</p>
+            )}
           </div>
         )}
 
@@ -77,16 +158,21 @@ export default function Booking() {
               {textConstant.howManyPeople}
             </DialogTitle>
             <input
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-gray-300 focus:ring-primary focus:border-transparent mb-4"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-gray-300 focus:ring-primary focus:border-transparent mb-2"
               type="number"
-              placeholder="Enter number person"
+              placeholder="Enter number of persons"
+              onChange={handlePersonNumber}
+              value={personCount}
             />
+            {invalidPersonCountError && (
+              <p className="text-rose-600 text-sm">{invalidPersonCountError}</p>
+            )}
           </div>
         )}
-
         <DialogClose asChild>
           <button
             type="button"
+            onClick={handleSubmit}
             className="w-full bg-black text-white px-6 py-3 rounded-lg font-semibold text-lg mt-4 transition-all duration-200 ease-in-out shadow-md hover:shadow-lg uppercase"
           >
             {textConstant.booked}
