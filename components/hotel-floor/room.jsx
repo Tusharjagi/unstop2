@@ -1,5 +1,3 @@
-"use client";
-
 export default function Room({ room, id }) {
   const handleRoomClick = () => {
     console.log(room);
