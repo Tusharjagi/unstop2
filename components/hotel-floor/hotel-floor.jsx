@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Floor from "./floor";
 
-export default function HotelFloors({ isDialogOpen, resetAPICalls }) {
+export default function HotelFloors({ resetAPICalls }) {
   const [hotelData, setHotelData] = useState(null);
 
   const fetchHotelData = async () => {
@@ -17,8 +17,8 @@ export default function HotelFloors({ isDialogOpen, resetAPICalls }) {
   };
 
   useEffect(() => {
-    if (!isDialogOpen) fetchHotelData();
-  }, [isDialogOpen, resetAPICalls]);
+    fetchHotelData();
+  }, [resetAPICalls]);
 
   return (
     <div className="grid place-content-center m-10">

@@ -6,7 +6,6 @@ import HotelFloors from "@/components/hotel-floor/hotel-floor";
 import { textConstant } from "@/utils/textConstant";
 
 export default function Home() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [resetAPICalls, setResetAPICalls] = useState(false);
 
   const handleResetButton = async () => {
@@ -63,13 +62,15 @@ export default function Home() {
         {textConstant.hotelManagementSystem}
       </h1>
       <Header
-        isDialogOpen={isDialogOpen}
-        setIsDialogOpen={setIsDialogOpen}
         handleResetButton={handleResetButton}
         resetAPICalls={resetAPICalls}
         handleRandomClick={handleRandomClick}
+        setResetAPICalls={setResetAPICalls}
       />
-      <HotelFloors isDialogOpen={isDialogOpen} resetAPICalls={resetAPICalls} />
+      <HotelFloors
+        resetAPICalls={resetAPICalls}
+        setResetAPICalls={setResetAPICalls}
+      />
     </div>
   );
 }

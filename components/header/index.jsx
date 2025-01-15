@@ -3,11 +3,10 @@ import { textConstant } from "@/utils/textConstant";
 import Booking from "./booking";
 
 export default function Header({
-  isDialogOpen,
-  setIsDialogOpen,
   handleResetButton,
   resetAPICalls,
   handleRandomClick,
+  setResetAPICalls,
 }) {
   const [availableRoomsCount, setAvailableRoomsCount] = useState(null);
 
@@ -24,8 +23,8 @@ export default function Header({
   };
 
   useEffect(() => {
-    if (!isDialogOpen) fetchAvailableRoomsCount();
-  }, [isDialogOpen, resetAPICalls]);
+    fetchAvailableRoomsCount();
+  }, [resetAPICalls]);
 
   return (
     <div className="flex justify-between w-screen items-center mt-10 px-12">
@@ -34,10 +33,7 @@ export default function Header({
         {availableRoomsCount !== null ? availableRoomsCount : "0"}
       </div>
       <div className="flex justify-center items-center gap-12 flex-wrap">
-        <Booking
-          isDialogOpen={isDialogOpen}
-          setIsDialogOpen={setIsDialogOpen}
-        />
+        <Booking setResetAPICalls={setResetAPICalls} />
         <button
           className="bg-offWhite text-darkBlack px-8 py-4 rounded-md font-semibold text-xl hover:translate-y-[-2px] transition-all duration-200 ease-in-out"
           onClick={handleResetButton}

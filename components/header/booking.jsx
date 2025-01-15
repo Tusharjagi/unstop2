@@ -10,12 +10,13 @@ import {
 } from "../ui/dialog";
 import { textConstant } from "@/utils/textConstant";
 
-export default function Booking({ setIsDialogOpen, isDialogOpen }) {
+export default function Booking({ setResetAPICalls }) {
   const [bookingMethod, setBookingMethod] = useState("roomNumber");
   const [selectedRoomNumber, setSelectedRoomNumber] = useState("");
   const [personCount, setPersonCount] = useState(0);
   const [invalidRoomNumberError, setInvalidRoomNumberError] = useState(null);
   const [invalidPersonCountError, setInvalidPersonCountError] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleMethodChange = (e) => {
     setBookingMethod(e.target.value);
@@ -74,6 +75,7 @@ export default function Booking({ setIsDialogOpen, isDialogOpen }) {
         if (response.ok) {
           setIsDialogOpen(false);
           setSelectedRoomNumber("");
+          setResetAPICalls((prev) => !prev);
         } else {
           setInvalidRoomNumberError(
             data.message || "An unknown error occurred."
