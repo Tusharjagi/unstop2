@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -73,6 +73,7 @@ export default function Booking({ setIsDialogOpen, isDialogOpen }) {
 
         if (response.ok) {
           setIsDialogOpen(false);
+          setSelectedRoomNumber("");
         } else {
           setInvalidRoomNumberError(
             data.message || "An unknown error occurred."
@@ -83,12 +84,11 @@ export default function Booking({ setIsDialogOpen, isDialogOpen }) {
       }
     }
 
-    if (
-      bookingMethod === "person" &&
-      (!personCount || invalidPersonCountError)
-    ) {
-      setInvalidPersonCountError("Please provide a valid person count.");
-      return;
+    if (bookingMethod === "person") {
+      if (!personCount || invalidPersonCountError) {
+        setInvalidPersonCountError("Please provide a valid person count.");
+        return;
+      }
     }
   };
 
