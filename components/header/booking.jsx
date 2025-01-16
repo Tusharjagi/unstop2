@@ -51,7 +51,6 @@ export default function Booking({ setResetAPICalls }) {
   const handleSubmit = async () => {
     if (bookingMethod === "roomNumber") {
       if (!selectedRoomNumber.length) {
-        setIsDialogOpen(false);
         setInvalidRoomNumberError("Please provide a room number.");
         return;
       }
@@ -73,9 +72,9 @@ export default function Booking({ setResetAPICalls }) {
         const data = await response.json();
 
         if (response.ok) {
-          setIsDialogOpen(false);
           setSelectedRoomNumber("");
           setResetAPICalls((prev) => !prev);
+          setIsDialogOpen(false);
         } else {
           setInvalidRoomNumberError(
             data.message || "An unknown error occurred."
@@ -90,6 +89,34 @@ export default function Booking({ setResetAPICalls }) {
       if (!personCount || invalidPersonCountError) {
         setInvalidPersonCountError("Please provide a valid person count.");
         return;
+      }
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/bookRoomPerson`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              persons: personCount,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setPersonCount("");
+          setResetAPICalls((prev) => !prev);
+          setIsDialogOpen(false);
+        } else {
+          setInvalidPersonCountError(
+            data.message || "An unknown error occurred."
+          );
+        }
+      } catch (error) {
+        setInvalidPersonCountError("Failed to connect to the server.");
       }
     }
   };
@@ -175,6 +202,7 @@ export default function Booking({ setResetAPICalls }) {
           <button
             type="button"
             onClick={handleSubmit}
+            disabled={invalidRoomNumberError || invalidPersonCountError}
             className="w-full bg-black text-white px-6 py-3 rounded-lg font-semibold text-lg mt-4 transition-all duration-200 ease-in-out shadow-md hover:shadow-lg uppercase"
           >
             {textConstant.booked}
